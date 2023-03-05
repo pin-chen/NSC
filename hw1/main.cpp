@@ -26,6 +26,7 @@ struct option long_options[] = {
     {"count", required_argument, nullptr, 'c'},
     {"filter", required_argument, nullptr, 'f'},
     {"help", no_argument, nullptr, 'h'},
+    {"list", no_argument, nullptr, 'l'},
     {nullptr, 0, nullptr, 0}
 };
 
@@ -143,8 +144,8 @@ void packet_capturer(string interface, int count, string filter){
 int main(int argc, char*argv[]){
     int opt, count = -1;
     string interface = "", filter = "all";
-
-    while ((opt = getopt_long(argc, argv, "i:c:f:h", long_options, nullptr)) != -1) {
+    pcap_if_t *devices = NULL;
+    while ((opt = getopt_long(argc, argv, "i:c:f:hl", long_options, nullptr)) != -1) {
         switch (opt) {
             case 'i':
                 interface = optarg;
@@ -166,6 +167,13 @@ int main(int argc, char*argv[]){
                 cout << "--count {number}, -c {number}\n";
                 cout << "--filter {udp, tcp, icmp, all}, -f {udp, tcp, icmp, all}\n";
                 return 0;
+            case 'l':
+                if(-1 == pcap_findalldevs(&devices, errbuf)) {
+                    cerr << "pcap_findalldevs: " << errbuf << "\n";
+                    exit(1);
+                }
+                for(pcap_if_t *d = devices; d ; d = d->next) cout << "Name: " << d->name << '\n';
+                return 0;
             default:
                 //cerr << "Unknown argument: [" << opt << "].\n";
                 return 1;
@@ -184,8 +192,7 @@ int main(int argc, char*argv[]){
         return 1;
     }
 
-    //get all devices 
-    pcap_if_t *devices = NULL;
+    //get all devices
     if(-1 == pcap_findalldevs(&devices, errbuf)) {
         cerr << "pcap_findalldevs: " << errbuf << "\n";// if error, fprint error message --> errbuf
         exit(1);
