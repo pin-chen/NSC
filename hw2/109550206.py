@@ -38,17 +38,19 @@ class host:
             return
         if tmp.dst_ip != self.ip:
             return
-        self.update_arp(tmp.src_ip, tmp.src_mac)
         if tmp.protocol == "arp":
+            self.update_arp(tmp.src_ip, tmp.src_mac)
             if tmp.type == "request":
                 p = packet(protocol="arp", type="reply", dst_mac=tmp.src_mac, src_mac=self.mac, dst_ip=tmp.src_ip, src_ip=self.ip)
                 self.send(p)
             elif tmp.type == "reply":
-                p = packet(protocol="icmp", type="request", dst_mac=tmp.src_mac, src_mac=self.mac, dst_ip=tmp.src_ip, src_ip=self.ip)
-                self.send(p)
+                pass
         elif tmp.protocol == "icmp":
             if tmp.type == "request":
-                p = packet(protocol="icmp", type="reply", dst_mac=tmp.src_mac, src_mac=self.mac, dst_ip=tmp.src_ip, src_ip=self.ip)
+                if tmp.src_ip not in self.arp_table:
+                    p = packet(protocol="arp", type="request", dst_mac="broadcast_mac", src_mac=self.mac, dst_ip=tmp.src_ip, src_ip=self.ip)
+                    self.send(p)
+                p = packet(protocol="icmp", type="reply", dst_mac=self.arp_table[tmp.src_ip], src_mac=self.mac, dst_ip=tmp.src_ip, src_ip=self.ip)
                 self.send(p)
             elif tmp.type == "reply":
                 pass
@@ -56,9 +58,8 @@ class host:
         if dst_ip not in self.arp_table:
             p = packet(protocol="arp", type="request", dst_mac="broadcast_mac", src_mac=self.mac, dst_ip=dst_ip, src_ip=self.ip)
             self.send(p)
-        else:
-            p = packet(protocol="icmp", type="request", dst_mac=self.arp_table[dst_ip], src_mac=self.mac, dst_ip=dst_ip, src_ip=self.ip)
-            self.send(p)
+        p = packet(protocol="icmp", type="request", dst_mac=self.arp_table[dst_ip], src_mac=self.mac, dst_ip=dst_ip, src_ip=self.ip)
+        self.send(p)
     def send(self, packet):
         node = self.port_to # get node connected to this host
         node.handle_packet(packet, self.port_to_port_num) # send packet to the connected node
@@ -164,16 +165,19 @@ def ping(tmp1, tmp2): # initiate a ping between two hosts
 
 def show_table(tmp): # display the ARP or MAC table of a node
     global host_dict, switch_dict
-    print('ip : mac')
     if tmp == 'all_hosts':
+        print('ip : mac')
         for h in host_dict.values():
             h.show_table()
     elif tmp == 'all_switches':
+        print('mac : port')
         for s in switch_dict.values():
             s.show_table()
     elif tmp in host_dict:
+        print('ip : mac')
         host_dict[tmp].show_table()
     elif tmp in switch_dict:
+        print('mac : port')
         switch_dict[tmp].show_table()
     else:
         print("a wrong command")
