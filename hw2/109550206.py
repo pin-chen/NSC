@@ -205,6 +205,8 @@ def run_net():
             show_table(argv[1])
         elif argc == 2 and argv[0] == 'clear':
             clear(argv[1])
+        elif argc == 1 and argv[0] == 'exit':
+            exit(0)
         else:
             print('a wrong command')
     
