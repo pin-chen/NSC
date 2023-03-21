@@ -37,3 +37,5 @@ hw1/main
 *.txt
 hw2/109550004.py
 hw2/109550129.py
+*.pyc
+__pycache__
