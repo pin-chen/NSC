@@ -38,7 +38,7 @@ self.p_resend = 1 / (host_num * coefficient)
 | ![](https://i.imgur.com/QaPIbGU.png) | ![](https://i.imgur.com/3eQCCvu.png) | ![](https://i.imgur.com/Ia0gwSU.png) |
 | ------------------------------------ | ------------------------------------ | ------------------------------------ |
 
-Coefficient 增加表示 max collision wait time 增加，對每個 Host 而言可以選擇重送的時間變多會大量減少碰撞，並增加 Success，但過大的 wait time 反而會些許增加 idle time 。 
+Coefficient 增加表示 max collision wait time 增加，對每個 Host 而言可以選擇重送的時間變多會大量減少碰撞，並增加 Success，但過大的 wait time 反而會增加 idle time，以及過小的重送機率會使 Slotted Aloha 的 Idle Time 增加。 且其對於 CSMA、CSMA/CD 影響較少，因為其透過 carrier sense 已經獲得足夠小的 Collision rate ，因此影響較小。
 
 ### 5.
 
@@ -59,7 +59,7 @@ Coefficient 增加表示 max collision wait time 增加，對每個 Host 而言�
 | ![](https://i.imgur.com/Vl6msAM.png) | ![](https://i.imgur.com/21GoD7G.png) | ![](https://i.imgur.com/2UjQaex.png) |
 | ------------------------------------ | ------------------------------------ | ------------------------------------ |
 
-增加 Packet Size 與前述情況相似，隨著每個 Paccket 占用網路時間變多，自然會減少 Idle ，並增加 Success 。
+增加 Packet Size 與前述情況相似，隨著每個 Paccket 占用網路時間變多，自然會減少 Idle ，並增加 Success 。其中 Aloha 會因此產生更多碰撞，而 CSMA、CSMA/CD 則因此更容易發揮 carrier sense 而減少碰撞。
 
 ### 8.
 
