@@ -40,3 +40,6 @@ hw2/109550129.py
 *.pyc
 __pycache__
 *.ipynb_checkpoints
+hw4/ans_ospf.py
+hw4/ans_rip.py
+hw4/testdata.py
