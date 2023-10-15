@@ -24,7 +24,7 @@ int ip_end = 200;
 // netmask
 uint32_t netmask = 0xFFFFFF00;
 // Interface
-string interface = "enp0s3";
+char interface[] = "enp0s3";
 // Server MAC
 unsigned char srcMac[6] = {0x08, 0x00, 0x27, 0x9f, 0x16, 0xc6};
 // Server IP
